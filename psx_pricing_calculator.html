@@ -1,607 +1,494 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>حاسبة تسعير المنتجات — DZ</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap');
 
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap');
+    *{box-sizing:border-box;margin:0;padding:0;}
 
-*{box-sizing:border-box;margin:0;padding:0;}
+    body{
+      background:#050810;
+      min-height:100vh;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      padding:20px 10px;
+    }
 
-.psx-root{
-  font-family:'Share Tech Mono',monospace;
-  background:#0a0a12;
-  color:#c8d8f0;
-  padding:20px 16px 24px;
-  min-height:100vh;
-  position:relative;
-  overflow:hidden;
-}
+    .psx-root{
+      font-family:'Share Tech Mono',monospace;
+      background:#0a0a12;
+      color:#c8d8f0;
+      padding:20px 16px 24px;
+      position:relative;
+      overflow:hidden;
+      width:100%;
+      max-width:480px;
+    }
 
-.psx-root::before{
-  content:'';
-  position:absolute;
-  inset:0;
-  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.18) 2px,rgba(0,0,0,0.18) 4px);
-  pointer-events:none;
-  z-index:0;
-}
+    .psx-root::before{
+      content:'';
+      position:absolute;
+      inset:0;
+      background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.18) 2px,rgba(0,0,0,0.18) 4px);
+      pointer-events:none;
+      z-index:0;
+    }
 
-.psx-root::after{
-  content:'';
-  position:absolute;
-  inset:0;
-  background:radial-gradient(ellipse at 50% 0%,rgba(60,80,180,0.12) 0%,transparent 70%);
-  pointer-events:none;
-  z-index:0;
-}
+    .psx-root::after{
+      content:'';
+      position:absolute;
+      inset:0;
+      background:radial-gradient(ellipse at 50% 0%,rgba(60,80,180,0.12) 0%,transparent 70%);
+      pointer-events:none;
+      z-index:0;
+    }
 
-.psx-inner{position:relative;z-index:1;}
+    .psx-inner{position:relative;z-index:1;}
 
-.psx-boot{
-  text-align:center;
-  margin-bottom:18px;
-}
+    .psx-boot{text-align:center;margin-bottom:18px;}
 
-.psx-logo{
-  font-family:'Press Start 2P',monospace;
-  font-size:9px;
-  color:#4a8fff;
-  letter-spacing:3px;
-  text-shadow:0 0 8px #4a8fff,0 0 20px rgba(74,143,255,0.4);
-  margin-bottom:6px;
-}
+    .psx-logo{
+      font-family:'Press Start 2P',monospace;
+      font-size:9px;
+      color:#4a8fff;
+      letter-spacing:3px;
+      text-shadow:0 0 8px #4a8fff,0 0 20px rgba(74,143,255,0.4);
+      margin-bottom:6px;
+    }
 
-.psx-subtitle{
-  font-size:10px;
-  color:#5a7aaa;
-  letter-spacing:2px;
-}
+    .psx-subtitle{font-size:10px;color:#5a7aaa;letter-spacing:2px;}
 
-.psx-divider{
-  height:1px;
-  background:linear-gradient(90deg,transparent,#2a4a8a,#4a8fff,#2a4a8a,transparent);
-  margin:12px 0;
-  box-shadow:0 0 6px rgba(74,143,255,0.4);
-}
+    .psx-divider{
+      height:1px;
+      background:linear-gradient(90deg,transparent,#2a4a8a,#4a8fff,#2a4a8a,transparent);
+      margin:12px 0;
+      box-shadow:0 0 6px rgba(74,143,255,0.4);
+    }
 
-.psx-panel{
-  background:rgba(10,15,35,0.85);
-  border:1px solid #1a3060;
-  border-radius:0;
-  padding:12px;
-  margin-bottom:10px;
-  position:relative;
-}
+    .psx-panel{
+      background:rgba(10,15,35,0.85);
+      border:1px solid #1a3060;
+      padding:12px;
+      margin-bottom:10px;
+      position:relative;
+    }
 
-.psx-panel::before{
-  content:'';
-  position:absolute;
-  inset:0;
-  border:1px solid rgba(74,143,255,0.08);
-  pointer-events:none;
-}
+    .psx-panel::before{
+      content:'';
+      position:absolute;
+      inset:0;
+      border:1px solid rgba(74,143,255,0.08);
+      pointer-events:none;
+    }
 
-.psx-panel-title{
-  font-family:'Press Start 2P',monospace;
-  font-size:7px;
-  color:#4a8fff;
-  letter-spacing:1px;
-  margin-bottom:12px;
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
+    .psx-panel-title{
+      font-family:'Press Start 2P',monospace;
+      font-size:7px;
+      color:#4a8fff;
+      letter-spacing:1px;
+      margin-bottom:12px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
 
-.psx-panel-title::before{
-  content:'▶';
-  color:#ff6b35;
-  font-size:7px;
-}
+    .psx-panel-title::before{content:'▶';color:#ff6b35;font-size:7px;}
 
-.inputs-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
-}
+    .inputs-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 
-.psx-field{
-  background:rgba(5,8,20,0.9);
-  border:1px solid #1e3565;
-  padding:8px 10px;
-  position:relative;
-  transition:border-color 0.15s;
-}
+    .psx-field{
+      background:rgba(5,8,20,0.9);
+      border:1px solid #1e3565;
+      padding:8px 10px;
+      position:relative;
+      transition:border-color 0.15s;
+    }
 
-.psx-field:hover{
-  border-color:#2a5aaa;
-}
+    .psx-field:hover{border-color:#2a5aaa;}
 
-.psx-field.focus-active{
-  border-color:#4a8fff;
-  box-shadow:0 0 0 1px rgba(74,143,255,0.2),inset 0 0 8px rgba(74,143,255,0.06);
-}
+    .psx-field.focus-active{
+      border-color:#4a8fff;
+      box-shadow:0 0 0 1px rgba(74,143,255,0.2),inset 0 0 8px rgba(74,143,255,0.06);
+    }
 
-.psx-field label{
-  display:block;
-  font-size:8px;
-  color:#5a7aaa;
-  letter-spacing:1px;
-  margin-bottom:6px;
-  font-family:'Press Start 2P',monospace;
-  line-height:1.6;
-}
+    .psx-field label{
+      display:block;
+      font-size:8px;
+      color:#5a7aaa;
+      letter-spacing:1px;
+      margin-bottom:6px;
+      font-family:'Press Start 2P',monospace;
+      line-height:1.6;
+    }
 
-.field-row{
-  display:flex;
-  align-items:center;
-  gap:4px;
-}
+    .field-row{display:flex;align-items:center;gap:4px;}
 
-.psx-field input{
-  background:transparent;
-  border:none;
-  font-family:'Share Tech Mono',monospace;
-  font-size:18px;
-  font-weight:700;
-  color:#e0eeff;
-  text-align:right;
-  width:100%;
-  outline:none;
-  caret-color:#4a8fff;
-}
+    .psx-field input{
+      background:transparent;
+      border:none;
+      font-family:'Share Tech Mono',monospace;
+      font-size:18px;
+      font-weight:700;
+      color:#e0eeff;
+      text-align:right;
+      width:100%;
+      outline:none;
+      caret-color:#4a8fff;
+    }
 
-.psx-field input::-webkit-inner-spin-button,
-.psx-field input::-webkit-outer-spin-button{-webkit-appearance:none;}
+    .psx-field input::-webkit-inner-spin-button,
+    .psx-field input::-webkit-outer-spin-button{-webkit-appearance:none;}
 
-.dz-tag{
-  font-size:9px;
-  color:#2a4a7a;
-  font-weight:700;
-  white-space:nowrap;
-}
+    .dz-tag{font-size:9px;color:#2a4a7a;font-weight:700;white-space:nowrap;}
 
-.selling-field{
-  grid-column:1/-1;
-  border-color:#ff6b35;
-  background:rgba(20,8,4,0.9);
-  box-shadow:inset 0 0 12px rgba(255,107,53,0.05);
-}
+    .selling-field{
+      grid-column:1/-1;
+      border-color:#ff6b35;
+      background:rgba(20,8,4,0.9);
+      box-shadow:inset 0 0 12px rgba(255,107,53,0.05);
+    }
 
-.selling-field:hover{border-color:#ff8c60;}
-.selling-field.focus-active{
-  border-color:#ff6b35;
-  box-shadow:0 0 0 1px rgba(255,107,53,0.3),inset 0 0 12px rgba(255,107,53,0.08);
-}
+    .selling-field:hover{border-color:#ff8c60;}
+    .selling-field.focus-active{
+      border-color:#ff6b35;
+      box-shadow:0 0 0 1px rgba(255,107,53,0.3),inset 0 0 12px rgba(255,107,53,0.08);
+    }
 
-.selling-field label{color:#ff6b35;}
-.selling-field input{color:#ffb08a;font-size:22px;}
-.selling-field .dz-tag{color:#7a3a1a;}
+    .selling-field label{color:#ff6b35;}
+    .selling-field input{color:#ffb08a;font-size:22px;}
+    .selling-field .dz-tag{color:#7a3a1a;}
 
-.psx-cursor{
-  display:inline-block;
-  width:8px;
-  height:14px;
-  background:#4a8fff;
-  animation:blink 1s step-end infinite;
-  vertical-align:middle;
-  margin-right:4px;
-  opacity:0;
-}
+    .psx-cursor{
+      display:inline-block;
+      width:8px;height:14px;
+      background:#4a8fff;
+      animation:blink 1s step-end infinite;
+      vertical-align:middle;
+      margin-right:4px;
+      opacity:0;
+    }
 
-.psx-field.focus-active .psx-cursor{opacity:1;}
-.selling-field .psx-cursor{background:#ff6b35;}
+    .psx-field.focus-active .psx-cursor{opacity:1;}
+    .selling-field .psx-cursor{background:#ff6b35;}
 
-@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+    @keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
 
-.results-panel{
-  background:rgba(4,8,18,0.95);
-  border:1px solid #1a3060;
-  padding:12px;
-  margin-bottom:10px;
-}
+    .results-panel{
+      background:rgba(4,8,18,0.95);
+      border:1px solid #1a3060;
+      padding:12px;
+      margin-bottom:10px;
+    }
 
-.cost-table{
-  width:100%;
-  font-size:11px;
-  border-collapse:collapse;
-}
+    .cost-table{width:100%;font-size:11px;border-collapse:collapse;}
+    .cost-table tr{border-bottom:1px solid rgba(26,48,96,0.5);}
+    .cost-table tr:last-child{border-bottom:none;}
+    .cost-table td{padding:5px 2px;color:#7a9acc;}
+    .cost-table td:last-child{text-align:left;color:#b0c8e8;font-weight:700;}
+    .cost-table .total-row td{color:#4a8fff;font-size:12px;padding-top:8px;}
+    .cost-table .total-row td:last-child{color:#ff6b35;font-size:13px;text-shadow:0 0 6px rgba(255,107,53,0.3);}
 
-.cost-table tr{
-  border-bottom:1px solid rgba(26,48,96,0.5);
-}
+    .metrics-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
 
-.cost-table tr:last-child{border-bottom:none;}
+    .metric-box{
+      background:rgba(4,8,18,0.95);
+      border:1px solid #1a3060;
+      padding:10px 12px;
+      text-align:center;
+      position:relative;
+      overflow:hidden;
+    }
 
-.cost-table td{
-  padding:5px 2px;
-  color:#7a9acc;
-}
+    .metric-box::after{
+      content:'';
+      position:absolute;
+      bottom:0;left:0;right:0;
+      height:2px;
+    }
 
-.cost-table td:last-child{
-  text-align:left;
-  color:#b0c8e8;
-  font-weight:700;
-}
+    .metric-box.profit-box::after{background:linear-gradient(90deg,transparent,#3a9a3a,transparent);}
+    .metric-box.sell-box::after{background:linear-gradient(90deg,transparent,#ff6b35,transparent);}
+    .metric-box.margin-box::after{background:linear-gradient(90deg,transparent,#b040ff,transparent);}
+    .metric-box.roi-box::after{background:linear-gradient(90deg,transparent,#4a8fff,transparent);}
 
-.cost-table .total-row td{
-  color:#4a8fff;
-  font-size:12px;
-  padding-top:8px;
-}
+    .metric-lbl{font-family:'Press Start 2P',monospace;font-size:6px;color:#3a5a8a;letter-spacing:1px;margin-bottom:6px;display:block;}
+    .metric-val{font-family:'Press Start 2P',monospace;font-size:14px;display:block;line-height:1.2;}
+    .metric-unit{font-size:8px;display:block;margin-top:3px;opacity:0.6;}
 
-.cost-table .total-row td:last-child{
-  color:#ff6b35;
-  font-size:13px;
-  text-shadow:0 0 6px rgba(255,107,53,0.3);
-}
+    .profit-box .metric-val{color:#3adf3a;text-shadow:0 0 10px rgba(58,223,58,0.4);}
+    .profit-box .metric-lbl,.profit-box .metric-unit{color:#2a6a2a;}
+    .metric-box.neg .metric-val{color:#ff4040;text-shadow:0 0 10px rgba(255,64,64,0.4);}
+    .sell-box .metric-val{color:#ff8c60;text-shadow:0 0 10px rgba(255,107,53,0.3);}
+    .sell-box .metric-lbl,.sell-box .metric-unit{color:#6a3a1a;}
+    .margin-box .metric-val{color:#d080ff;text-shadow:0 0 10px rgba(176,64,255,0.3);}
+    .margin-box .metric-lbl,.margin-box .metric-unit{color:#5a2a7a;}
+    .roi-box .metric-val{color:#4a8fff;text-shadow:0 0 10px rgba(74,143,255,0.3);}
+    .roi-box .metric-lbl,.roi-box .metric-unit{color:#1a3a6a;}
 
-.metrics-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
-  margin-bottom:10px;
-}
+    .gauge-wrap{margin-bottom:10px;padding:0 2px;}
+    .gauge-labels{display:flex;justify-content:space-between;font-size:8px;color:#2a4a7a;margin-bottom:4px;font-family:'Press Start 2P',monospace;}
+    .gauge-track{height:6px;background:rgba(10,20,50,0.9);border:1px solid #1a3060;position:relative;overflow:hidden;}
+    .gauge-fill{height:100%;transition:width 0.35s ease,background 0.35s;}
+    .gauge-markers{display:flex;justify-content:space-between;font-size:7px;color:#1a3060;margin-top:2px;padding:0 2px;font-family:'Press Start 2P',monospace;}
 
-.metric-box{
-  background:rgba(4,8,18,0.95);
-  border:1px solid #1a3060;
-  padding:10px 12px;
-  text-align:center;
-  position:relative;
-  overflow:hidden;
-}
+    .psx-footer{display:flex;align-items:center;justify-content:space-between;margin-top:12px;}
 
-.metric-box::after{
-  content:'';
-  position:absolute;
-  bottom:0;left:0;right:0;
-  height:2px;
-}
+    .psx-btn{
+      background:rgba(10,20,50,0.8);
+      border:1px solid #1a3060;
+      color:#3a5a8a;
+      font-family:'Press Start 2P',monospace;
+      font-size:7px;
+      padding:8px 14px;
+      cursor:pointer;
+      letter-spacing:1px;
+      transition:all 0.15s;
+    }
 
-.metric-box.profit-box::after{background:linear-gradient(90deg,transparent,#3a9a3a,transparent);}
-.metric-box.sell-box::after{background:linear-gradient(90deg,transparent,#ff6b35,transparent);}
-.metric-box.margin-box::after{background:linear-gradient(90deg,transparent,#b040ff,transparent);}
-.metric-box.roi-box::after{background:linear-gradient(90deg,transparent,#4a8fff,transparent);}
+    .psx-btn:hover{border-color:#4a8fff;color:#4a8fff;box-shadow:0 0 8px rgba(74,143,255,0.2);}
+    .psx-btn:active{transform:scale(0.97);}
 
-.metric-lbl{
-  font-family:'Press Start 2P',monospace;
-  font-size:6px;
-  color:#3a5a8a;
-  letter-spacing:1px;
-  margin-bottom:6px;
-  display:block;
-}
+    .status-bar{font-family:'Press Start 2P',monospace;font-size:7px;color:#1a3060;letter-spacing:1px;text-align:center;}
 
-.metric-val{
-  font-family:'Press Start 2P',monospace;
-  font-size:14px;
-  display:block;
-  line-height:1.2;
-}
+    .blink-dot{
+      display:inline-block;
+      width:5px;height:5px;
+      background:#3a9a3a;
+      border-radius:50%;
+      animation:blink 1.2s ease-in-out infinite;
+      vertical-align:middle;
+      margin-left:4px;
+      box-shadow:0 0 4px rgba(58,154,58,0.6);
+    }
 
-.metric-unit{
-  font-size:8px;
-  display:block;
-  margin-top:3px;
-  opacity:0.6;
-}
+    .scanline-overlay{
+      position:absolute;inset:0;
+      background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,50,0.06) 3px,rgba(0,0,50,0.06) 4px);
+      pointer-events:none;z-index:2;
+    }
 
-.profit-box .metric-val{color:#3adf3a;text-shadow:0 0 10px rgba(58,223,58,0.4);}
-.profit-box .metric-lbl,.profit-box .metric-unit{color:#2a6a2a;}
-.metric-box.neg .metric-val{color:#ff4040;text-shadow:0 0 10px rgba(255,64,64,0.4);}
-.sell-box .metric-val{color:#ff8c60;text-shadow:0 0 10px rgba(255,107,53,0.3);}
-.sell-box .metric-lbl,.sell-box .metric-unit{color:#6a3a1a;}
-.margin-box .metric-val{color:#d080ff;text-shadow:0 0 10px rgba(176,64,255,0.3);}
-.margin-box .metric-lbl,.margin-box .metric-unit{color:#5a2a7a;}
-.roi-box .metric-val{color:#4a8fff;text-shadow:0 0 10px rgba(74,143,255,0.3);}
-.roi-box .metric-lbl,.roi-box .metric-unit{color:#1a3a6a;}
+    .corner{position:absolute;width:12px;height:12px;border-color:#4a8fff;border-style:solid;opacity:0.4;}
+    .corner-tl{top:0;left:0;border-width:2px 0 0 2px;}
+    .corner-tr{top:0;right:0;border-width:2px 2px 0 0;}
+    .corner-bl{bottom:0;left:0;border-width:0 0 2px 2px;}
+    .corner-br{bottom:0;right:0;border-width:0 2px 2px 0;}
+  </style>
+</head>
+<body>
+  <div class="psx-root">
+    <div class="scanline-overlay"></div>
+    <div class="corner corner-tl"></div>
+    <div class="corner corner-tr"></div>
+    <div class="corner corner-bl"></div>
+    <div class="corner corner-br"></div>
 
-.gauge-wrap{margin-bottom:10px;padding:0 2px;}
+    <div class="psx-inner">
+      <div class="psx-boot">
+        <div class="psx-logo">حاسبة التسعير</div>
+        <div class="psx-subtitle">PRICING · CALCULATOR · DZ</div>
+      </div>
 
-.gauge-labels{
-  display:flex;
-  justify-content:space-between;
-  font-size:8px;
-  color:#2a4a7a;
-  margin-bottom:4px;
-  font-family:'Press Start 2P',monospace;
-}
+      <div class="psx-divider"></div>
 
-.gauge-track{
-  height:6px;
-  background:rgba(10,20,50,0.9);
-  border:1px solid #1a3060;
-  position:relative;
-  overflow:hidden;
-}
-
-.gauge-fill{
-  height:100%;
-  transition:width 0.35s ease,background 0.35s;
-}
-
-.gauge-markers{
-  display:flex;
-  justify-content:space-between;
-  font-size:7px;
-  color:#1a3060;
-  margin-top:2px;
-  padding:0 2px;
-  font-family:'Press Start 2P',monospace;
-}
-
-.psx-footer{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-top:12px;
-}
-
-.psx-btn{
-  background:rgba(10,20,50,0.8);
-  border:1px solid #1a3060;
-  color:#3a5a8a;
-  font-family:'Press Start 2P',monospace;
-  font-size:7px;
-  padding:8px 14px;
-  cursor:pointer;
-  letter-spacing:1px;
-  transition:all 0.15s;
-}
-
-.psx-btn:hover{
-  border-color:#4a8fff;
-  color:#4a8fff;
-  box-shadow:0 0 8px rgba(74,143,255,0.2);
-}
-
-.psx-btn:active{transform:scale(0.97);}
-
-.status-bar{
-  font-family:'Press Start 2P',monospace;
-  font-size:7px;
-  color:#1a3060;
-  letter-spacing:1px;
-  text-align:center;
-}
-
-.blink-dot{
-  display:inline-block;
-  width:5px;height:5px;
-  background:#3a9a3a;
-  border-radius:50%;
-  animation:blink 1.2s ease-in-out infinite;
-  vertical-align:middle;
-  margin-left:4px;
-  box-shadow:0 0 4px rgba(58,154,58,0.6);
-}
-
-.scanline-overlay{
-  position:absolute;
-  inset:0;
-  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,50,0.06) 3px,rgba(0,0,50,0.06) 4px);
-  pointer-events:none;
-  z-index:2;
-}
-
-.corner{
-  position:absolute;
-  width:12px;height:12px;
-  border-color:#4a8fff;
-  border-style:solid;
-  opacity:0.4;
-}
-.corner-tl{top:0;left:0;border-width:2px 0 0 2px;}
-.corner-tr{top:0;right:0;border-width:2px 2px 0 0;}
-.corner-bl{bottom:0;left:0;border-width:0 0 2px 2px;}
-.corner-br{bottom:0;right:0;border-width:0 2px 2px 0;}
-</style>
-
-<div class="psx-root">
-  <div class="scanline-overlay"></div>
-  <div class="corner corner-tl"></div>
-  <div class="corner corner-tr"></div>
-  <div class="corner corner-bl"></div>
-  <div class="corner corner-br"></div>
-
-  <div class="psx-inner">
-    <div class="psx-boot">
-      <div class="psx-logo">حاسبة التسعير</div>
-      <div class="psx-subtitle">PRICING · CALCULATOR · DZ</div>
-    </div>
-
-    <div class="psx-divider"></div>
-
-    <div class="psx-panel">
-      <div class="psx-panel-title">إدخال التكاليف</div>
-      <div class="inputs-grid">
-        <div class="psx-field" id="f-wholesale">
-          <span class="psx-cursor"></span>
-          <label>سعر الجملة</label>
-          <div class="field-row">
-            <input type="number" id="wholesale" value="500" min="0">
-            <span class="dz-tag">دج</span>
+      <div class="psx-panel">
+        <div class="psx-panel-title">إدخال التكاليف</div>
+        <div class="inputs-grid">
+          <div class="psx-field" id="f-wholesale">
+            <span class="psx-cursor"></span>
+            <label>سعر الجملة</label>
+            <div class="field-row">
+              <input type="number" id="wholesale" value="500" min="0">
+              <span class="dz-tag">دج</span>
+            </div>
           </div>
-        </div>
-        <div class="psx-field" id="f-shipping">
-          <span class="psx-cursor"></span>
-          <label>تكلفة الشحن</label>
-          <div class="field-row">
-            <input type="number" id="shipping" value="400" min="0">
-            <span class="dz-tag">دج</span>
+          <div class="psx-field" id="f-shipping">
+            <span class="psx-cursor"></span>
+            <label>تكلفة الشحن</label>
+            <div class="field-row">
+              <input type="number" id="shipping" value="400" min="0">
+              <span class="dz-tag">دج</span>
+            </div>
           </div>
-        </div>
-        <div class="psx-field" id="f-confirmation">
-          <span class="psx-cursor"></span>
-          <label>تأكيد الطلب</label>
-          <div class="field-row">
-            <input type="number" id="confirmation" value="80" min="0">
-            <span class="dz-tag">دج</span>
+          <div class="psx-field" id="f-confirmation">
+            <span class="psx-cursor"></span>
+            <label>تأكيد الطلب</label>
+            <div class="field-row">
+              <input type="number" id="confirmation" value="80" min="0">
+              <span class="dz-tag">دج</span>
+            </div>
           </div>
-        </div>
-        <div class="psx-field" id="f-packaging">
-          <span class="psx-cursor"></span>
-          <label>التغليف</label>
-          <div class="field-row">
-            <input type="number" id="packaging" value="60" min="0">
-            <span class="dz-tag">دج</span>
+          <div class="psx-field" id="f-packaging">
+            <span class="psx-cursor"></span>
+            <label>التغليف</label>
+            <div class="field-row">
+              <input type="number" id="packaging" value="60" min="0">
+              <span class="dz-tag">دج</span>
+            </div>
           </div>
-        </div>
-        <div class="psx-field" id="f-ads">
-          <span class="psx-cursor"></span>
-          <label>الإعلانات</label>
-          <div class="field-row">
-            <input type="number" id="ads" value="200" min="0">
-            <span class="dz-tag">دج</span>
+          <div class="psx-field" id="f-ads">
+            <span class="psx-cursor"></span>
+            <label>الإعلانات</label>
+            <div class="field-row">
+              <input type="number" id="ads" value="200" min="0">
+              <span class="dz-tag">دج</span>
+            </div>
           </div>
-        </div>
-        <div class="psx-field" id="f-returns">
-          <span class="psx-cursor"></span>
-          <label>الإرجاع</label>
-          <div class="field-row">
-            <input type="number" id="returns" value="0" min="0">
-            <span class="dz-tag">دج</span>
+          <div class="psx-field" id="f-returns">
+            <span class="psx-cursor"></span>
+            <label>الإرجاع</label>
+            <div class="field-row">
+              <input type="number" id="returns" value="0" min="0">
+              <span class="dz-tag">دج</span>
+            </div>
           </div>
-        </div>
-        <div class="psx-field selling-field" id="f-selling">
-          <span class="psx-cursor"></span>
-          <label>▶ سعر البيع ◀</label>
-          <div class="field-row">
-            <input type="number" id="selling" value="2000" min="0">
-            <span class="dz-tag">دج</span>
+          <div class="psx-field selling-field" id="f-selling">
+            <span class="psx-cursor"></span>
+            <label>▶ سعر البيع ◀</label>
+            <div class="field-row">
+              <input type="number" id="selling" value="2000" min="0">
+              <span class="dz-tag">دج</span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="results-panel">
-      <div class="psx-panel-title">تفاصيل التكاليف</div>
-      <table class="cost-table">
-        <tr><td>» سعر الجملة</td><td id="r-w">500 دج</td></tr>
-        <tr><td>» الشحن</td><td id="r-sh">400 دج</td></tr>
-        <tr><td>» التأكيد</td><td id="r-co">80 دج</td></tr>
-        <tr><td>» التغليف</td><td id="r-pk">60 دج</td></tr>
-        <tr><td>» الإعلانات</td><td id="r-ad">200 دج</td></tr>
-        <tr><td>» الإرجاع</td><td id="r-rt">0 دج</td></tr>
-        <tr class="total-row"><td>■ إجمالي التكاليف</td><td id="r-tot">1,240 دج</td></tr>
-      </table>
-    </div>
+      <div class="results-panel">
+        <div class="psx-panel-title">تفاصيل التكاليف</div>
+        <table class="cost-table">
+          <tr><td>» سعر الجملة</td><td id="r-w">500 دج</td></tr>
+          <tr><td>» الشحن</td><td id="r-sh">400 دج</td></tr>
+          <tr><td>» التأكيد</td><td id="r-co">80 دج</td></tr>
+          <tr><td>» التغليف</td><td id="r-pk">60 دج</td></tr>
+          <tr><td>» الإعلانات</td><td id="r-ad">200 دج</td></tr>
+          <tr><td>» الإرجاع</td><td id="r-rt">0 دج</td></tr>
+          <tr class="total-row"><td>■ إجمالي التكاليف</td><td id="r-tot">1,240 دج</td></tr>
+        </table>
+      </div>
 
-    <div class="metrics-grid">
-      <div class="metric-box profit-box" id="profit-box">
-        <span class="metric-lbl">الربح</span>
-        <span class="metric-val" id="m-profit">760</span>
-        <span class="metric-unit">دج</span>
+      <div class="metrics-grid">
+        <div class="metric-box profit-box" id="profit-box">
+          <span class="metric-lbl">الربح</span>
+          <span class="metric-val" id="m-profit">760</span>
+          <span class="metric-unit">دج</span>
+        </div>
+        <div class="metric-box sell-box">
+          <span class="metric-lbl">سعر البيع</span>
+          <span class="metric-val" id="m-sell">2,000</span>
+          <span class="metric-unit">دج</span>
+        </div>
+        <div class="metric-box margin-box">
+          <span class="metric-lbl">نسبة الربح</span>
+          <span class="metric-val" id="m-margin">38.0%</span>
+          <span class="metric-unit">من سعر البيع</span>
+        </div>
+        <div class="metric-box roi-box">
+          <span class="metric-lbl">ROI</span>
+          <span class="metric-val" id="m-roi">61.3%</span>
+          <span class="metric-unit">عائد استثماري</span>
+        </div>
       </div>
-      <div class="metric-box sell-box">
-        <span class="metric-lbl">سعر البيع</span>
-        <span class="metric-val" id="m-sell">2,000</span>
-        <span class="metric-unit">دج</span>
-      </div>
-      <div class="metric-box margin-box">
-        <span class="metric-lbl">نسبة الربح</span>
-        <span class="metric-val" id="m-margin">38.0%</span>
-        <span class="metric-unit">من سعر البيع</span>
-      </div>
-      <div class="metric-box roi-box">
-        <span class="metric-lbl">ROI</span>
-        <span class="metric-val" id="m-roi">61.3%</span>
-        <span class="metric-unit">عائد استثماري</span>
-      </div>
-    </div>
 
-    <div class="gauge-wrap">
-      <div class="gauge-labels">
-        <span>نسبة الربح</span>
-        <span id="g-lbl">38.0%</span>
+      <div class="gauge-wrap">
+        <div class="gauge-labels">
+          <span>نسبة الربح</span>
+          <span id="g-lbl">38.0%</span>
+        </div>
+        <div class="gauge-track">
+          <div class="gauge-fill" id="g-fill" style="width:38%;background:#3adf3a;"></div>
+        </div>
+        <div class="gauge-markers">
+          <span>0%</span><span>10%</span><span>25%</span><span>50%</span><span>100%</span>
+        </div>
       </div>
-      <div class="gauge-track">
-        <div class="gauge-fill" id="g-fill" style="width:38%;background:#3adf3a;"></div>
-      </div>
-      <div class="gauge-markers">
-        <span>0%</span><span>10%</span><span>25%</span><span>50%</span><span>100%</span>
-      </div>
-    </div>
 
-    <div class="psx-divider"></div>
+      <div class="psx-divider"></div>
 
-    <div class="psx-footer">
-      <button class="psx-btn" onclick="resetAll()">◀ RESET</button>
-      <div class="status-bar">LIVE <span class="blink-dot"></span></div>
-      <button class="psx-btn" onclick="copyResult()">COPY ▶</button>
+      <div class="psx-footer">
+        <button class="psx-btn" onclick="resetAll()">◀ RESET</button>
+        <div class="status-bar">LIVE <span class="blink-dot"></span></div>
+        <button class="psx-btn" onclick="copyResult()">COPY ▶</button>
+      </div>
     </div>
   </div>
-</div>
 
-<script>
-const fields=['wholesale','shipping','confirmation','packaging','ads','returns','selling'];
+  <script>
+    const fields=['wholesale','shipping','confirmation','packaging','ads','returns','selling'];
 
-function fmt(n){return Math.round(n).toLocaleString('en');}
-function fmt1(n){return n.toFixed(1);}
+    function fmt(n){return Math.round(n).toLocaleString('en');}
+    function fmt1(n){return n.toFixed(1);}
 
-function calc(){
-  const w=+document.getElementById('wholesale').value||0;
-  const sh=+document.getElementById('shipping').value||0;
-  const co=+document.getElementById('confirmation').value||0;
-  const pk=+document.getElementById('packaging').value||0;
-  const ad=+document.getElementById('ads').value||0;
-  const rt=+document.getElementById('returns').value||0;
-  const sp=+document.getElementById('selling').value||0;
+    function calc(){
+      const w=+document.getElementById('wholesale').value||0;
+      const sh=+document.getElementById('shipping').value||0;
+      const co=+document.getElementById('confirmation').value||0;
+      const pk=+document.getElementById('packaging').value||0;
+      const ad=+document.getElementById('ads').value||0;
+      const rt=+document.getElementById('returns').value||0;
+      const sp=+document.getElementById('selling').value||0;
 
-  const tot=w+sh+co+pk+ad+rt;
-  const profit=sp-tot;
-  const margin=sp>0?(profit/sp)*100:0;
-  const roi=tot>0?(profit/tot)*100:0;
+      const tot=w+sh+co+pk+ad+rt;
+      const profit=sp-tot;
+      const margin=sp>0?(profit/sp)*100:0;
+      const roi=tot>0?(profit/tot)*100:0;
 
-  document.getElementById('r-w').textContent=fmt(w)+' دج';
-  document.getElementById('r-sh').textContent=fmt(sh)+' دج';
-  document.getElementById('r-co').textContent=fmt(co)+' دج';
-  document.getElementById('r-pk').textContent=fmt(pk)+' دج';
-  document.getElementById('r-ad').textContent=fmt(ad)+' دج';
-  document.getElementById('r-rt').textContent=fmt(rt)+' دج';
-  document.getElementById('r-tot').textContent=fmt(tot)+' دج';
+      document.getElementById('r-w').textContent=fmt(w)+' دج';
+      document.getElementById('r-sh').textContent=fmt(sh)+' دج';
+      document.getElementById('r-co').textContent=fmt(co)+' دج';
+      document.getElementById('r-pk').textContent=fmt(pk)+' دج';
+      document.getElementById('r-ad').textContent=fmt(ad)+' دج';
+      document.getElementById('r-rt').textContent=fmt(rt)+' دج';
+      document.getElementById('r-tot').textContent=fmt(tot)+' دج';
 
-  document.getElementById('m-profit').textContent=fmt(profit);
-  document.getElementById('m-sell').textContent=fmt(sp);
-  document.getElementById('m-margin').textContent=fmt1(margin)+'%';
-  document.getElementById('m-roi').textContent=fmt1(roi)+'%';
+      document.getElementById('m-profit').textContent=fmt(profit);
+      document.getElementById('m-sell').textContent=fmt(sp);
+      document.getElementById('m-margin').textContent=fmt1(margin)+'%';
+      document.getElementById('m-roi').textContent=fmt1(roi)+'%';
 
-  const pb=document.getElementById('profit-box');
-  pb.className='metric-box profit-box'+(profit<0?' neg':'');
+      const pb=document.getElementById('profit-box');
+      pb.className='metric-box profit-box'+(profit<0?' neg':'');
 
-  const pct=Math.min(Math.max(margin,0),100);
-  const gf=document.getElementById('g-fill');
-  gf.style.width=pct+'%';
-  gf.style.background=margin>=30?'#3adf3a':margin>=10?'#EF9F27':'#E24B4A';
-  document.getElementById('g-lbl').textContent=fmt1(margin)+'%';
-}
+      const pct=Math.min(Math.max(margin,0),100);
+      const gf=document.getElementById('g-fill');
+      gf.style.width=pct+'%';
+      gf.style.background=margin>=30?'#3adf3a':margin>=10?'#EF9F27':'#E24B4A';
+      document.getElementById('g-lbl').textContent=fmt1(margin)+'%';
+    }
 
-fields.forEach(id=>{
-  const inp=document.getElementById(id);
-  const wrap=document.getElementById('f-'+id);
-  inp.addEventListener('input',calc);
-  inp.addEventListener('focus',()=>{if(wrap)wrap.classList.add('focus-active');});
-  inp.addEventListener('blur',()=>{if(wrap)wrap.classList.remove('focus-active');});
-});
+    fields.forEach(id=>{
+      const inp=document.getElementById(id);
+      const wrap=document.getElementById('f-'+id);
+      inp.addEventListener('input',calc);
+      inp.addEventListener('focus',()=>{if(wrap)wrap.classList.add('focus-active');});
+      inp.addEventListener('blur',()=>{if(wrap)wrap.classList.remove('focus-active');});
+    });
 
-function resetAll(){
-  const def={wholesale:500,shipping:400,confirmation:80,packaging:60,ads:200,returns:0,selling:2000};
-  Object.keys(def).forEach(k=>{document.getElementById(k).value=def[k];});
-  calc();
-}
+    function resetAll(){
+      const def={wholesale:500,shipping:400,confirmation:80,packaging:60,ads:200,returns:0,selling:2000};
+      Object.keys(def).forEach(k=>{document.getElementById(k).value=def[k];});
+      calc();
+    }
 
-function copyResult(){
-  const w=+document.getElementById('wholesale').value||0;
-  const sh=+document.getElementById('shipping').value||0;
-  const co=+document.getElementById('confirmation').value||0;
-  const pk=+document.getElementById('packaging').value||0;
-  const ad=+document.getElementById('ads').value||0;
-  const rt=+document.getElementById('returns').value||0;
-  const sp=+document.getElementById('selling').value||0;
-  const tot=w+sh+co+pk+ad+rt;
-  const profit=sp-tot;
-  const margin=sp>0?((profit/sp)*100).toFixed(1):0;
-  const roi=tot>0?((profit/tot)*100).toFixed(1):0;
-  const txt=`سعر الجملة: ${w} دج | الشحن: ${sh} دج | التأكيد: ${co} دج | التغليف: ${pk} دج | الإعلانات: ${ad} دج | الإرجاع: ${rt} دج\nإجمالي التكاليف: ${tot} دج | سعر البيع: ${sp} دج\nالربح: ${profit} دج | نسبة الربح: ${margin}% | ROI: ${roi}%`;
-  navigator.clipboard.writeText(txt).catch(()=>{});
-}
+    function copyResult(){
+      const w=+document.getElementById('wholesale').value||0;
+      const sh=+document.getElementById('shipping').value||0;
+      const co=+document.getElementById('confirmation').value||0;
+      const pk=+document.getElementById('packaging').value||0;
+      const ad=+document.getElementById('ads').value||0;
+      const rt=+document.getElementById('returns').value||0;
+      const sp=+document.getElementById('selling').value||0;
+      const tot=w+sh+co+pk+ad+rt;
+      const profit=sp-tot;
+      const margin=sp>0?((profit/sp)*100).toFixed(1):0;
+      const roi=tot>0?((profit/tot)*100).toFixed(1):0;
+      const txt=`سعر الجملة: ${w} دج | الشحن: ${sh} دج | التأكيد: ${co} دج | التغليف: ${pk} دج | الإعلانات: ${ad} دج | الإرجاع: ${rt} دج\nإجمالي التكاليف: ${tot} دج | سعر البيع: ${sp} دج\nالربح: ${profit} دج | نسبة الربح: ${margin}% | ROI: ${roi}%`;
+      navigator.clipboard.writeText(txt).catch(()=>{});
+    }
 
-calc();
-</script>
+    calc();
+  </script>
+</body>
+</html>
